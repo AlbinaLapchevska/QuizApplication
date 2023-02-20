@@ -4,6 +4,9 @@ import java.awt.*;
 public class Quiz extends JFrame {
     String questions[][] = new String[10][5];
     String answers[][] = new String[10][2];
+    JLabel questionNumber, question;
+    JRadioButton opt1, opt2, opt3, opt4;
+    public static int timer = 15;
 
     Quiz() {
         setBounds(50, 0, 1800, 1050);
@@ -15,15 +18,15 @@ public class Quiz extends JFrame {
         image2.setBounds(0, 0, 1700, 430);
         add(image2);
 
-        JLabel questionNumber = new JLabel("1");
-        questionNumber.setBounds(100,450,60,60);
-        questionNumber.setFont(new Font("Mongolian Baiti", Font.BOLD, 28));
+        questionNumber = new JLabel();
+        questionNumber.setBounds(100, 550, 60, 60);
+        questionNumber.setFont(new Font("Mongolian Baiti", Font.BOLD, 30));
         questionNumber.setForeground(Color.white);
         add(questionNumber);
 
-        JLabel question = new JLabel("This is a question");
-        question.setBounds(150,450,600,60);
-        question.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
+        question = new JLabel();
+        question.setBounds(140, 550, 600, 60);
+        question.setFont(new Font("Mongolian Baiti", Font.BOLD, 30));
         question.setForeground(Color.white);
         add(question);
 
@@ -98,7 +101,91 @@ public class Quiz extends JFrame {
         answers[8][1] = "Apollo";
         answers[9][1] = "Brazil";
 
+        opt1 = new JRadioButton();
+        opt1.setBounds(170, 620, 400, 30);
+        opt1.setBackground(new Color(16, 15, 15));
+        opt1.setForeground(Color.white);
+        opt1.setFont(new Font("Mongolian Baiti", Font.BOLD, 28));
+        add(opt1);
+
+        opt2 = new JRadioButton();
+        opt2.setBounds(170, 690, 400, 30);
+        opt2.setBackground(new Color(16, 15, 15));
+        opt2.setForeground(Color.white);
+        opt2.setFont(new Font("Mongolian Baiti", Font.BOLD, 28));
+        add(opt2);
+
+        opt3 = new JRadioButton();
+        opt3.setBounds(170, 720, 400, 30);
+        opt3.setBackground(new Color(16, 15, 15));
+        opt3.setForeground(Color.white);
+        opt3.setFont(new Font("Mongolian Baiti", Font.BOLD, 28));
+        add(opt3);
+
+        opt4 = new JRadioButton();
+        opt4.setBounds(170, 770, 400, 30);
+        opt4.setBackground(new Color(16, 15, 15));
+        opt4.setForeground(Color.white);
+        opt4.setFont(new Font("Mongolian Baiti", Font.BOLD, 28));
+        add(opt4);
+
+        ButtonGroup groupoptions = new ButtonGroup();
+        groupoptions.add(opt1);
+        groupoptions.add(opt2);
+        groupoptions.add(opt3);
+        groupoptions.add(opt4);
+
+        JButton next = new JButton("NEXT");
+        next.setBounds(750, 580, 200, 60);
+        next.setBackground(Color.CYAN);
+        next.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
+        add(next);
+
+        JButton hint = new JButton("HINT 50/50");
+        hint.setBounds(750, 680, 200, 60);
+        hint.setBackground(Color.YELLOW);
+        hint.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
+        add(hint);
+
+        JButton submit = new JButton("SUBMIT");
+        submit.setBounds(750, 780, 200, 60);
+        submit.setBackground(Color.MAGENTA);
+        submit.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
+        submit.setEnabled(false);
+        add(submit);
+
+        start(0);
+
         setVisible(true);
+    }
+
+    private void start(int i) {
+        questionNumber.setText("" + i + 1 + " . ");
+        question.setText(questions[i][0]);
+        opt1.setText(" " + questions[i][1]);
+        opt2.setText(" " + questions[i][2]);
+        opt3.setText(" " + questions[i][3]);
+        opt4.setText(" " + questions[i][4]);
+    }
+
+    public void paint(Graphics g) {
+        super.paint(g);
+        String time = "TIME LEFT: " + timer + " seconds";
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Mongolian Baiti", Font.BOLD, 32));
+        if (timer > 0) {
+            g.drawString(time, 1100, 750);
+        }
+        else {
+            g.drawString("TIME HAS PASSED!", 1100, 750);
+        }
+        timer--;
+        try {
+            Thread.sleep(1000);
+            repaint();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
