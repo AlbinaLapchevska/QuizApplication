@@ -29,12 +29,13 @@ public class Rules extends JFrame implements ActionListener {
         rules.setFont(new Font("Mongolian Baiti", Font.BOLD, 32));
         rules.setForeground(Color.MAGENTA);
         rules.setText("<html>" +
-                "1. You will have 10 questions."+"<br><br>"+
-                "2. Each question has only one correct answer. "+"<br><br>"+
-                "3. Be careful and have fun "+"<br><br>"+
-                "4. Click button FINISH to see result."+"<br><br>"+
+                "1. You will have 10 questions." + "<br><br>" +
+                "2. Each question has only one correct answer. " + "<br><br>" +
+                "3. Be careful and have fun. " + "<br><br>" +
+                "4. Click button START to see first question." + "<br><br>" +
+                "5. Click button FINISH to see result." + "<br><br>" +
 
-                 "<html>"
+                "<html>"
         );
         add(rules);
 
@@ -65,6 +66,7 @@ public class Rules extends JFrame implements ActionListener {
 
         } else if (e.getSource() == start) {
             setVisible(false);
+            new Quiz();
 
         }
     }
