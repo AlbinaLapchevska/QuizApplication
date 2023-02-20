@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 public class Login extends JFrame implements ActionListener {
     JButton cont, exit;
     JTextField textField;
+    public String name;
 
     Login() {
         getContentPane().setBackground(Color.BLACK);
@@ -55,7 +56,7 @@ public class Login extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cont) {
-            String name = textField.getText();
+            name = textField.getText();
             setVisible(false);
             new Rules(name);
 

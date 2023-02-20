@@ -41,7 +41,7 @@ public class Rules extends JFrame implements ActionListener {
 
         back = new JButton("BACK");
         back.setBounds(300, 580, 200, 50);
-        back.setBackground(Color.CYAN);
+        back.setBackground(Color.yellow);
         back.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
         back.addActionListener(this);
         add(back);
@@ -66,7 +66,7 @@ public class Rules extends JFrame implements ActionListener {
 
         } else if (e.getSource() == start) {
             setVisible(false);
-            new Quiz();
+            new Quiz(name);
 
         }
     }

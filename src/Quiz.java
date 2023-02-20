@@ -1,14 +1,26 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Quiz extends JFrame {
+public class Quiz extends JFrame implements ActionListener {
     String questions[][] = new String[10][5];
     String answers[][] = new String[10][2];
+    String userAnswers[][] = new String[10][1];
     JLabel questionNumber, question;
     JRadioButton opt1, opt2, opt3, opt4;
-    public static int timer = 15;
+    ButtonGroup groupoptions;
+    JButton next, submit;
 
-    Quiz() {
+    public static int timer = 15;
+    public static int answersGiven = 0;
+    public static int count = 0;
+    public static int score = 0;
+
+    String name;
+
+    Quiz(String username) {
+        this.name=username;
         setBounds(50, 0, 1800, 1050);
         getContentPane().setBackground(new Color(16, 15, 15));
         setLayout(null);
@@ -19,13 +31,13 @@ public class Quiz extends JFrame {
         add(image2);
 
         questionNumber = new JLabel();
-        questionNumber.setBounds(100, 550, 60, 60);
+        questionNumber.setBounds(100, 510, 60, 60);
         questionNumber.setFont(new Font("Mongolian Baiti", Font.BOLD, 30));
         questionNumber.setForeground(Color.white);
         add(questionNumber);
 
         question = new JLabel();
-        question.setBounds(140, 550, 600, 60);
+        question.setBounds(140, 510, 900, 60);
         question.setFont(new Font("Mongolian Baiti", Font.BOLD, 30));
         question.setForeground(Color.white);
         add(question);
@@ -116,79 +128,170 @@ public class Quiz extends JFrame {
         add(opt2);
 
         opt3 = new JRadioButton();
-        opt3.setBounds(170, 720, 400, 30);
+        opt3.setBounds(170, 770, 400, 30);
         opt3.setBackground(new Color(16, 15, 15));
         opt3.setForeground(Color.white);
         opt3.setFont(new Font("Mongolian Baiti", Font.BOLD, 28));
         add(opt3);
 
         opt4 = new JRadioButton();
-        opt4.setBounds(170, 770, 400, 30);
+        opt4.setBounds(170, 850, 400, 30);
         opt4.setBackground(new Color(16, 15, 15));
         opt4.setForeground(Color.white);
         opt4.setFont(new Font("Mongolian Baiti", Font.BOLD, 28));
         add(opt4);
 
-        ButtonGroup groupoptions = new ButtonGroup();
+        groupoptions = new ButtonGroup();
         groupoptions.add(opt1);
         groupoptions.add(opt2);
         groupoptions.add(opt3);
         groupoptions.add(opt4);
 
-        JButton next = new JButton("NEXT");
-        next.setBounds(750, 580, 200, 60);
+        next = new JButton("NEXT");
+        next.setBounds(950, 580, 200, 60);
         next.setBackground(Color.CYAN);
         next.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
+        next.addActionListener(this);
         add(next);
 
-        JButton hint = new JButton("HINT 50/50");
-        hint.setBounds(750, 680, 200, 60);
-        hint.setBackground(Color.YELLOW);
-        hint.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
-        add(hint);
 
-        JButton submit = new JButton("SUBMIT");
-        submit.setBounds(750, 780, 200, 60);
+        submit = new JButton("SUBMIT");
+        submit.setBounds(950, 780, 200, 60);
         submit.setBackground(Color.MAGENTA);
         submit.setFont(new Font("Mongolian Baiti", Font.BOLD, 24));
         submit.setEnabled(false);
+        submit.addActionListener(this);
         add(submit);
 
-        start(0);
+        start(count);
 
         setVisible(true);
     }
 
     private void start(int i) {
-        questionNumber.setText("" + i + 1 + " . ");
+        questionNumber.setText("" + (i + 1) + ". ");
         question.setText(questions[i][0]);
-        opt1.setText(" " + questions[i][1]);
-        opt2.setText(" " + questions[i][2]);
-        opt3.setText(" " + questions[i][3]);
-        opt4.setText(" " + questions[i][4]);
+        opt1.setText(" " + questions[count][1]);
+        opt1.setActionCommand(questions[count][1]);
+
+        opt2.setText(" " + questions[count][2]);
+        opt2.setActionCommand(questions[count][2]);
+
+        opt3.setText(" " + questions[count][3]);
+        opt3.setActionCommand(questions[count][3]);
+
+        opt4.setText(" " + questions[count][4]);
+        opt4.setActionCommand(questions[count][4]);
+
+        groupoptions.clearSelection();
     }
 
     public void paint(Graphics g) {
         super.paint(g);
+
         String time = "TIME LEFT: " + timer + " seconds";
         g.setColor(Color.WHITE);
         g.setFont(new Font("Mongolian Baiti", Font.BOLD, 32));
+
         if (timer > 0) {
-            g.drawString(time, 1100, 750);
+            g.drawString(time, 900, 760);
+        } else {
+            g.drawString("Times up!!", 900, 760);
         }
-        else {
-            g.drawString("TIME HAS PASSED!", 1100, 750);
-        }
+
         timer--;
+
         try {
             Thread.sleep(1000);
             repaint();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (answersGiven == 1) {
+            answersGiven = 0;
+            timer = 15;
+        } else if (timer < 0) {
+            timer = 15;
+            opt1.setEnabled(true);
+            opt2.setEnabled(true);
+            opt3.setEnabled(true);
+            opt4.setEnabled(true);
+
+            if (count == 8) {
+                next.setEnabled(false);
+                submit.setEnabled(true);
+            }
+            if (count == 9) { // submit button
+                if (groupoptions.getSelection() == null) {
+                    userAnswers[count][0] = "";
+                } else {
+                    userAnswers[count][0] = groupoptions.getSelection().getActionCommand();
+                }
+
+                for (int i = 0; i < userAnswers.length; i++) {
+                    if (userAnswers[i][0].equals(answers[i][1])) {
+                        score += 10;
+                    } else {
+                        score += 0;
+                    }
+                }
+                setVisible(false);
+                new Score(name, score);
+            } else { // next button
+                if (groupoptions.getSelection() == null) {
+                    userAnswers[count][0] = "";
+                } else {
+                    userAnswers[count][0] = groupoptions.getSelection().getActionCommand();
+                }
+                count++; // 0 // 1
+                start(count);
+            }
+        }
+
     }
 
     public static void main(String[] args) {
-        new Quiz();
+        new Quiz("");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == next) {
+            repaint();
+            answersGiven = 1;
+            if (groupoptions.getSelection() == null) {
+                userAnswers[count][0] = "";
+            } else {
+                userAnswers[count][0] = groupoptions.getSelection().getActionCommand();
+            }
+            if (count == 8) {
+                next.setEnabled(false);
+                submit.setEnabled(true);
+            }
+            count++;
+            start(count);
+
+        } else if (e.getSource() == submit) {
+            answersGiven = 1;
+            if (groupoptions.getSelection() == null) {
+                userAnswers[count][0] = "";
+            } else {
+                userAnswers[count][0] = groupoptions.getSelection().getActionCommand();
+            }
+
+            for (int i = 0; i < userAnswers.length; i++) {
+                if (userAnswers[i][0].equals(answers[i][1])) {
+                    score += 10;
+                } else {
+                    score += 0;
+                }
+            }
+            setVisible(false);
+            new Score(name, score);
+
+        }
+
     }
 }
